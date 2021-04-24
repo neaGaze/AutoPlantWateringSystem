@@ -57,16 +57,20 @@ print("Channel {}\t{:>5}\t{:>5}".format('Channel', 'raw', 'v'))
 try:
     while True:
         for i,chan in enumerate(channels):
-            print("{}\t{:>5}\t{:>5.3f}".format(i, chan.value, chan.voltage))
-            if pipe_lock >= 0:
-                if pipe_lock == i and float(chan.voltage) <= water_end_threshold:
-                    GPIO.output(sensor_to_gpio[i], GPIO.HIGH)
-                    pipe_lock = -1
-                    print("UNLOCKING PIPE %d" % i)
-            elif float(chan.voltage) >= water_start_threshold:
-                pipe_lock = i
-                print("LOCKING PIPE %d" % i)
-                GPIO.output(sensor_to_gpio[i], GPIO.LOW)
+            try:
+                print("{}\t{:>5}\t{:>5.3f}".format(i, chan.value, chan.voltage))
+            except:
+                print("Error! Something went wrong with the printing process")
+            finally:
+                if pipe_lock >= 0:
+                    if pipe_lock == i and float(chan.voltage) <= water_end_threshold:
+                        GPIO.output(sensor_to_gpio[i], GPIO.HIGH)
+                        pipe_lock = -1
+                        print("UNLOCKING PIPE %d" % i)
+                elif float(chan.voltage) >= water_start_threshold:
+                    pipe_lock = i
+                    print("LOCKING PIPE %d" % i)
+                    GPIO.output(sensor_to_gpio[i], GPIO.LOW)
         time.sleep(2)
 except KeyboardInterrupt:
     print("Quit")
