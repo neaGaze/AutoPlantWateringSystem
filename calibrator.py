@@ -1,6 +1,8 @@
 #!/usr/bin/python
 from adafruit_ads1x15.analog_in import AnalogIn
 import adafruit_ads1x15.ads1015 as ADS
+import busio
+import board
 
 # Create the I2C bus
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -25,23 +27,25 @@ def calibrate(channel_id):
     elif channel_id == 4:
         channel = AnalogIn(ads, ADS.P3)
     else:
-        raise Exception("Invalid channel Id provided. Exiting now")
+        raise Exception("Invalid channel Id provided. Exiting now\n")
         return
     
     # set up the calibration
     calibrator = Calibrator(channel_id)
-    input("Please put your sensor in the soil now. Press any key to continue.")
-    calibrator.water_start_threshold = float(chan.voltage)
-    input("Please pull your sensor out from the soil now. Press any key to continue.")
-    calibrator.water_end_threshold = float(chan.voltage)
+    input("Please put your sensor in the soil now. Press any key to continue.\n")
+    calibrator.water_start_threshold = float(channel.voltage)
+    print("The water starting threshold is set at: %s\n" % calibrator.water_start_threshold)
+    input("Please pull your sensor out from the soil now. Press any key to continue.\n")
+    calibrator.water_end_threshold = float(channel.voltage)
+    print("The water ending threshold is set at: %s\n" % calibrator.water_end_threshold)
 
 while True:
-    sensor_id = input("To calibrate the sensor enter the sensor Id (1/2/3/4) and hit return key")
+    sensor_id = input("To calibrate the sensor enter the sensor Id (1/2/3/4) and hit return key.\n")
     try:
-        calibrate(sensor_id)
-        should_continue = input("Press 'Y' or 'y' to continue on calibrate other sensor. \nPress any to exit.")
+        calibrate(int(sensor_id))
+        should_continue = input("Press 'Y' or 'y' to continue on calibrate other sensor. \nPress any to exit.\n")
         if should_continue != 'Y'.lower():
             break
     except ex:
-        print("Oops! Something went wrong. %s. Exiting now." % ex)
+        print("Oops! Something went wrong. %s. Exiting now.\n" % ex)
         break
