@@ -3,8 +3,10 @@ from adafruit_ads1x15.analog_in import AnalogIn
 import adafruit_ads1x15.ads1015 as ADS
 import busio
 import board
-from mysql.mysql_connector import MysqlDriver
-from mysql.channel import Channel
+import sys
+sys.path.insert(1, './mysql')
+from mysql_connector import MysqlDriver
+from channel import Channel
 
 # Create the I2C bus
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -22,7 +24,7 @@ class Calibrator:
         self.channel = channel_id
 
 def start_db_connection():
-    db = MysqlDriver("localhost", "WateringSystem", "nshakya", "plantypi")
+    db = MysqlDriver.instance("localhost", "WateringSystem", "nshakya", "plantypi")
     db.connect()
 
 def end_db_connection():

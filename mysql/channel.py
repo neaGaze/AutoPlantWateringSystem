@@ -9,7 +9,7 @@ class Channel():
 
 
     def __init__(self):
-        self._driver = MysqlDriver()
+        self._driver = MysqlDriver.instance()
 
     def update_start_trigger(self, channel_id, value):
         if self._driver:

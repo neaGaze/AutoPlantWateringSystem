@@ -17,8 +17,8 @@ class MysqlDriver:
         self.pwd = pwd
 
     @classmethod
-    def instance(host=None, db=None, user=None, pwd=None):
-        if _instance is None:
+    def instance(self, host=None, db=None, user=None, pwd=None):
+        if _instance:
             _instance = MysqlDriver(host, db, user, pwd) #__new__(cls)
         return _instance
 
