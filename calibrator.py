@@ -3,8 +3,8 @@ from adafruit_ads1x15.analog_in import AnalogIn
 import adafruit_ads1x15.ads1015 as ADS
 import busio
 import board
-from mysql_connector import MysqlDriver
-from channel import Channel
+from mysql.mysql_connector import MysqlDriver
+from mysql.channel import Channel
 
 # Create the I2C bus
 i2c = busio.I2C(board.SCL, board.SDA)
