@@ -18,7 +18,7 @@ class MysqlDriver:
 
     @classmethod
     def instance(self, host=None, db=None, user=None, pwd=None):
-        if _instance is None:
+        if _instance == None:
             print("Creating a new MySQL Instance")
             _instance = MysqlDriver(host, db, user, pwd) #__new__(cls)
         else:
