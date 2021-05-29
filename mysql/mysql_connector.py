@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 
 class MysqlDriver:
-    #_instance = None
+    _instance = None
 
     CHANNEL = "Channel"
     PLANT = "Plant"
@@ -18,12 +18,12 @@ class MysqlDriver:
 
     @classmethod
     def instance(self, host=None, db=None, user=None, pwd=None):
-        if self._instance is None:
+        if _instance is None:
             print("Creating a new MySQL Instance")
-            self._instance = MysqlDriver(host, db, user, pwd) #__new__(cls)
+            _instance = MysqlDriver(host, db, user, pwd) #__new__(cls)
         else:
             print("Reusing old instance")
-        return self._instance
+        return _instance
 
     def connect(self):
         try:
