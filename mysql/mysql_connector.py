@@ -56,7 +56,7 @@ class MysqlDriver:
             cursor = self.connection.cursor()
             # cursor.execute("insert into table ")
             stmt(cursor)
-            record = cursor.commit()
+            self.connection.commit()
             print("Inserted into the database.")
             cursor.close()
 
