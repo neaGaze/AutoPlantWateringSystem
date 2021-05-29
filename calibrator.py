@@ -50,10 +50,10 @@ def calibrate(channel_id):
     
     # set up the calibration
     calibrator = Calibrator(channel_id)
-    input("Please put your sensor in the soil now. Press any key to continue.\n")
+    input("Please put your sensor in the dry soil now. Press any key to continue.\n")
     calibrator.water_start_threshold = float(channel.voltage)
     print("The water starting threshold is set at: %s\n" % calibrator.water_start_threshold)
-    input("Please pull your sensor out from the soil now. Press any key to continue.\n")
+    input("Please water the soil now. Press any key to continue.\n")
     calibrator.water_end_threshold = float(channel.voltage)
     print("The water ending threshold is set at: %s\n" % calibrator.water_end_threshold)
     return calibrator
