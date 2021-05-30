@@ -13,8 +13,8 @@ class Channel:
 
     def update_start_trigger(self, channel_id, value):
         if self._driver:
-            self._driver.insert(lambda cursor: cursor.execute(Channel.UPDATE_CHANNEL__WATER_START_TRIGGER % (channel_id, value)))
+            self._driver.insert(lambda cursor: cursor.execute(Channel.UPDATE_CHANNEL__WATER_START_TRIGGER % (value, channel_id)))
     
     def update_end_trigger(self, channel_id, value):
         if self._driver:
-            self._driver.insert(lambda cursor: cursor.execute(Channel.UPDATE_CHANNEL__WATER_END_TRIGGER % (channel_id, value)))
+            self._driver.insert(lambda cursor: cursor.execute(Channel.UPDATE_CHANNEL__WATER_END_TRIGGER % (value, channel_id)))
