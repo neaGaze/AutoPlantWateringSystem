@@ -5,6 +5,10 @@ import busio
 import adafruit_ads1x15.ads1015 as ADS
 import RPi.GPIO as GPIO
 from adafruit_ads1x15.analog_in import AnalogIn
+sys.path.insert(1, './mysql')
+from mysql_connector import MysqlDriver
+from activity import Activity
+from channel import Channel
 
 # Create the I2C bus
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -54,14 +58,28 @@ pipe_lock = -1
 
 print("Channel {}\t{:>5}\t{:>5}".format('Channel', 'raw', 'v'))
 
+# Starting database connection
+db = MysqlDriver.instance("localhost", "WateringSystem", "nshakya", "plantypi")
+db.connect()
+activity = Activity()
+db_channel = Channel()
+thresholds = {}
+for i,c in enumerate(channels):
+    channel_id = i + 1
+    thresholds[channel_id] = db_channel.read_start_trigger(channel_id)
+print("water thresholds: %s \n" % (thresholds))
+
 try:
     while True:
+        open_channels = activity.read_are_open()
+
         for i,chan in enumerate(channels):
             try:
                 print("{}\t{:>5}\t{:>5.3f}".format(i, chan.value, chan.voltage))
             except:
                 print("Error! Something went wrong with the printing process")
             finally:
+                """
                 if pipe_lock >= 0:
                     if pipe_lock == i and float(chan.voltage) <= water_end_threshold:
                         GPIO.output(sensor_to_gpio[i], GPIO.HIGH)
@@ -71,7 +89,12 @@ try:
                     pipe_lock = i
                     print("LOCKING PIPE %d" % i)
                     GPIO.output(sensor_to_gpio[i], GPIO.LOW)
+                """
+                channel_id = i+1
+                if channel_id not in open_channels and float(chan.voltage) >= thresholds[channel_id]:
+                    activity.insert_water_start_txn(i)
         time.sleep(2)
 except KeyboardInterrupt:
     print("Quit")
+    db.disconnect()
     GPIO.cleanup()

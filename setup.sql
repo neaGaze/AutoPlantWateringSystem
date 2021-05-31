@@ -22,6 +22,7 @@ create table IF NOT EXISTS Activity(
     created_at datetime,
     channel_id INT,
     activity_type varchar(100),
+    is_open BOOLEAN NOT NULL,
     foreign key(channel_id)  REFERENCES Channel (channel_id)
         ON UPDATE RESTRICT ON DELETE CASCADE
 );
