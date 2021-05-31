@@ -1,6 +1,6 @@
 from mysql_connector import MysqlDriver
 from time import time
-from datatime import datetime
+from datetime import datetime
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 WATER_START_TYPE = "WATER START"
