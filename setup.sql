@@ -10,6 +10,7 @@ create table IF NOT EXISTS Channel (
     plant_id INT NOT NULL,
     water_start_trigger double,
     water_end_trigger double,
+    delay INT NOT NULL,
     foreign key(plant_id)  REFERENCES Plant (plant_id)
         ON UPDATE RESTRICT ON DELETE CASCADE
 );

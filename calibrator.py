@@ -21,6 +21,7 @@ class Calibrator:
     def __init__(self, channel_id):
         self.water_start_threshold = 2.5
         self.water_end_threshold = 2.0
+        self.delay = 0
         self.channel = channel_id
 
 def start_db_connection():
@@ -56,6 +57,11 @@ def calibrate(channel_id):
     input("Please water the soil now. Press any key to continue.\n")
     calibrator.water_end_threshold = float(channel.voltage)
     print("The water ending threshold is set at: %s\n" % calibrator.water_end_threshold)
+    try:
+        calibrator.delay = int(input("Please enter the delay in seconds between the dry soil and watering time.\n"))
+    except e:
+        print("Looks like you inserted something non integer where it should be an integer. Using the default as 0 secs now.")
+        calibrator.delay = 0
     return calibrator
 
 
@@ -67,6 +73,7 @@ while True:
         # TODO assert that the start and end threshold should meet criterias such as the values should always be greater or lower than the other
         channel.update_start_trigger(calibrator.channel, calibrator.water_start_threshold)
         channel.update_end_trigger(calibrator.channel, calibrator.water_end_threshold)
+        channel.update_delay(calibrator.channel, calibrator.delay)
 
         should_continue = input("Press 'Y' or 'y' to continue on calibrate other sensor. \nPress any to exit.\n")
         if should_continue != 'Y'.lower():
