@@ -5,6 +5,7 @@ import busio
 import adafruit_ads1x15.ads1015 as ADS
 import RPi.GPIO as GPIO
 from adafruit_ads1x15.analog_in import AnalogIn
+import sys
 sys.path.insert(1, './mysql')
 from mysql_connector import MysqlDriver
 from activity import Activity
