@@ -29,7 +29,7 @@ class Channel:
     def read_start_trigger(self, channel_id):
         start_trigger = 0.0
         if self._driver:
-            self._driver.fetch(lambda cursor: cursor.execute(Channel.READ_WATER_START_TRIGGER % (channel_id)))
+            record = self._driver.fetch(lambda cursor: cursor.execute(Channel.READ_WATER_START_TRIGGER % (channel_id)))
             start_trigger = int(record[0]) if len(record) > 0 else 0.0
         return start_trigger
 
