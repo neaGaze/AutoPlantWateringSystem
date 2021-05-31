@@ -59,7 +59,7 @@ def calibrate(channel_id):
     print("The water ending threshold is set at: %s\n" % calibrator.water_end_threshold)
     try:
         calibrator.delay = int(input("Please enter the delay in seconds between the dry soil and watering time.\n"))
-    except e:
+    except ValueError:
         print("Looks like you inserted something non integer where it should be an integer. Using the default as 0 secs now.")
         calibrator.delay = 0
     return calibrator
