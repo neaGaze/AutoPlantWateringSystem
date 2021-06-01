@@ -19,6 +19,7 @@ class Activity:
         if self._driver:
             uniq_id = time()
             cur_time = datetime.now()
+            print("QUERY into: "+Activity.INSERT_ACTIVITY % (uniq_id, cur_time, channel_id, WATER_START_TYPE, True))
             self._driver.insert(lambda cursor: cursor.execute(Activity.INSERT_ACTIVITY % (uniq_id, cur_time, channel_id, WATER_START_TYPE, True)))
 
     def insert_water_end_txn(self, channel_id, txn_id):
