@@ -9,8 +9,8 @@ WATER_END_TYPE = "WATER END"
 class Activity:
 
     # ACTIVITY
-    INSERT_ACTIVITY = "INSERT INTO Activity (transaction_id, created_at, channel_id, activity_type, is_open) VALUES (%d, %s, %d, %s, %b)"
-    READ_IS_OPEN = "SELECT channel_id from Activity where is_open=%b"
+    INSERT_ACTIVITY = "INSERT INTO Activity (transaction_id, created_at, channel_id, activity_type, is_open) VALUES (%d, %s, %d, %s, %i)"
+    READ_IS_OPEN = "SELECT channel_id from Activity where is_open=%i"
 
     def __init__(self):
         self._driver = MysqlDriver.instance()
