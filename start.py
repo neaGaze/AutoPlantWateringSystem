@@ -93,7 +93,7 @@ try:
                 """
                 channel_id = i+1
                 if channel_id not in open_channels and float(chan.voltage) >= thresholds[channel_id]:
-                    activity.insert_water_start_txn(i)
+                    activity.insert_water_start_txn(channel_id)
         time.sleep(2)
 except KeyboardInterrupt:
     print("Quit")

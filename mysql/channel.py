@@ -30,12 +30,12 @@ class Channel:
         start_trigger = 0.0
         if self._driver:
             record = self._driver.fetch(lambda cursor: cursor.execute(Channel.READ_WATER_START_TRIGGER % (channel_id)))
-            start_trigger = int(record[0]) if len(record) > 0 else 0.0
+            start_trigger = float(record[0]) if len(record) > 0 else 0.0
         return start_trigger
 
     def read_end_trigger(self, channel_id):
         end_trigger = 0.0
         if self._driver:
             record = self._driver.fetch(lambda cursor: cursor.execute(Channel.READ_WATER_END_TRIGGER % (channel_id)))
-            end_trigger = int(record[0]) if len(record) > 0 else 0.0
+            end_trigger = float(record[0]) if len(record) > 0 else 0.0
         return end_trigger
