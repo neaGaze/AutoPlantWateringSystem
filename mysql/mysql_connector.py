@@ -63,7 +63,7 @@ class MysqlDriver:
             record = cursor.fetchall()
             print("Fetched all from the database.")
             cursor.close()
-        return recor
+        return record
 
     def insert(self, stmt):
         if self.connection.is_connected():
