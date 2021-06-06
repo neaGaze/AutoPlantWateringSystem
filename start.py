@@ -73,6 +73,7 @@ print("water thresholds: %s \n" % (thresholds))
 try:
     while True:
         open_channels = activity.read_are_open()
+        print("OPEN channels: %s" % open_channels)
 
         for i,chan in enumerate(channels):
             try:
