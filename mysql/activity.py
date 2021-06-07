@@ -24,7 +24,6 @@ class Activity:
 
     def insert_water_end_txn(self, channel_id, txn_id):
         if self._driver:
-            cur_time = datetime.now()
             #self._driver.insert(lambda cursor: cursor.execute(Activity.INSERT_ACTIVITY % (txn_id, cur_time.strftime(DATETIME_FORMAT), channel_id, WATER_END_TYPE, False)))
             self._driver.insert(lambda cursor: cursor.execute(Activity.UPDATE_ACTIVITY % (WATER_END_TYPE, False, channel_id, txn_id)))
 

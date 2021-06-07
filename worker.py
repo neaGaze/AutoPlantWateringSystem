@@ -65,6 +65,7 @@ def is_wet_or_timeout(sensor_msrmnt, water_end_msrmnt):
 try:
     while True:
         open_channels_with_txnid = activity.read_are_open_with_txnid()
+        print("OPEN channels w/t txnid: %s" % open_channels_with_txnid)
         open_channels = list(map(lambda x: x[0], open_channels_with_txnid))
         txn_ids = list(map(lambda x: x[1], open_channels_with_txnid))
         channel_to_txn_id = {}
