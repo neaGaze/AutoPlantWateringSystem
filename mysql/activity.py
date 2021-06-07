@@ -10,7 +10,7 @@ class Activity:
 
     # ACTIVITY
     INSERT_ACTIVITY = "INSERT INTO Activity (created_at, channel_id, activity_type, is_open) VALUES ('%s', %d, '%s', %i)"
-    UPDATE_ACTIVITY = "UPDATE Activity SET activity_type='%s' AND is_open=%i WHERE channel_id=%d and transaction_id=%d"
+    UPDATE_ACTIVITY = "UPDATE Activity SET activity_type='%s', is_open=%i WHERE channel_id=%d and transaction_id=%d"
     READ_IS_OPEN = "SELECT channel_id, transaction_id from Activity where is_open=%i"
 
     def __init__(self):
