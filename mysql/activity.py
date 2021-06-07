@@ -1,7 +1,6 @@
 from mysql_connector import MysqlDriver
 from time import time
 from datetime import datetime
-import uuid
 
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 WATER_START_TYPE = "WATER START"
@@ -10,7 +9,7 @@ WATER_END_TYPE = "WATER END"
 class Activity:
 
     # ACTIVITY
-    INSERT_ACTIVITY = "INSERT INTO Activity (transaction_id, created_at, channel_id, activity_type, is_open) VALUES (%d, '%s', %d, '%s', %i)"
+    INSERT_ACTIVITY = "INSERT INTO Activity (created_at, channel_id, activity_type, is_open) VALUES ('%s', %d, '%s', %i)"
     UPDATE_ACTIVITY = "UPDATE Activity SET activity_type='%s' AND is_open=%i WHERE channel_id=%d and transaction_id=%d"
     READ_IS_OPEN = "SELECT channel_id, transaction_id from Activity where is_open=%i"
 
@@ -19,10 +18,9 @@ class Activity:
 
     def insert_water_start_txn(self, channel_id):
         if self._driver:
-            uniq_id = uuid.uuid1().int # time()
             cur_time = datetime.now()
-            print("QUERY into: "+Activity.INSERT_ACTIVITY % (uniq_id, cur_time.strftime(DATETIME_FORMAT), channel_id, WATER_START_TYPE, True))
-            self._driver.insert(lambda cursor: cursor.execute(Activity.INSERT_ACTIVITY % (uniq_id, cur_time.strftime(DATETIME_FORMAT), channel_id, WATER_START_TYPE, True)))
+            print("QUERY into: "+Activity.INSERT_ACTIVITY % (cur_time.strftime(DATETIME_FORMAT), channel_id, WATER_START_TYPE, True))
+            self._driver.insert(lambda cursor: cursor.execute(Activity.INSERT_ACTIVITY % (cur_time.strftime(DATETIME_FORMAT), channel_id, WATER_START_TYPE, True)))
 
     def insert_water_end_txn(self, channel_id, txn_id):
         if self._driver:

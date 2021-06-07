@@ -17,8 +17,7 @@ create table IF NOT EXISTS Channel (
 
 
 create table IF NOT EXISTS Activity(
-	activity_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    transaction_id INT,
+	transaction_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     created_at datetime,
     channel_id INT,
     activity_type varchar(100),
