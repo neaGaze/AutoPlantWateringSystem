@@ -45,26 +45,24 @@ class MysqlDriver:
 
     def fetch(self, stmt):
         record = None
-        con = self.connection.is_connected()
-        if con:
+        if self.connection.is_connected():
             cursor = self.connection.cursor()
             # cursor.execute("select database();")
             stmt(cursor)
             record = cursor.fetchone()
-            con.commit()
+            self.connection.commit()
             print("Fetched from the database.")
             cursor.close()
         return record
             
     def fetchall(self, stmt):
         record = None
-        con = self.connection.is_connected()
-        if con:
+        if self.connection.is_connected():
             cursor = self.connection.cursor()
             # cursor.execute("select database();")
             stmt(cursor)
             record = cursor.fetchall()
-            con.commit()
+            self.connection.commit()
             print("Fetched all from the database.")
             cursor.close()
         return record
