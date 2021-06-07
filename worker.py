@@ -10,6 +10,7 @@ sys.path.insert(1, './mysql')
 from mysql_connector import MysqlDriver
 from activity import Activity
 from channel import Channel
+from datetime import datetime
 
 # Create the I2C bus
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -20,20 +21,6 @@ ads = ADS.ADS1015(i2c)
 # Create single-ended input on channel 0
 channels = [AnalogIn(ads, ADS.P0), AnalogIn(ads, ADS.P1), AnalogIn(ads, ADS.P2), AnalogIn(ads, ADS.P3)]
 
-# Create differential input between channel 0 and 1
-#chan = AnalogIn(ads, ADS.P0, ADS.P1)
-
-# THE GPIO pins currently connected with the raspberry pi
-# GPIO | Relay
-#--------------
-# 26     01
-# 19     02
-# 13     03
-# 06     04
-# 12     05
-# 16     06
-# 20     07
-# 21     08
 # initiate list with pin gpio pin numbers
 gpioList = [6, 13, 19, 26, 12, 16, 20, 21]
 
@@ -51,14 +38,6 @@ for i in gpioList:
     GPIO.setup(i, GPIO.OUT)
     GPIO.output(i, GPIO.HIGH)
 
-water_start_threshold = 2.5
-#water_end_threshold = 2.0
-water_end_threshold = 2.0
-
-pipe_lock = -1
-
-print("Channel {}\t{:>5}\t{:>5}".format('Channel', 'raw', 'v'))
-
 # Starting database connection
 db = MysqlDriver.instance("localhost", "WateringSystem", "nshakya", "plantypi")
 db.connect()
@@ -67,9 +46,22 @@ db_channel = Channel()
 thresholds = {}
 for i,c in enumerate(channels):
     channel_id = i + 1
-    thresholds[channel_id] = db_channel.read_start_trigger(channel_id)
-print("water thresholds: %s \n" % (thresholds))
+    thresholds[channel_id] = {
+        'end': db_channel.read_end_trigger(channel_id)
+    }
 
+"""
+Checks to see if the sensor is dry/wet and/or the pump is running longer than 20 secs 
+"""
+def is_wet_or_timeout(sensor_msrmnt, water_end_msrmnt):
+    start_time = datetime.now()
+    while (datetime.now() - start_time).total_seconds() <= 20:
+        if sensor_msrmnt <= water_end_msrmnt: # if not dry
+            return True
+        time.sleep(2)
+    return True
+
+# Run a forever loop to check the dryness    
 try:
     while True:
         open_channels = activity.read_are_open()
@@ -81,21 +73,17 @@ try:
             except:
                 print("Error! Something went wrong with the printing process")
             finally:
-                """
-                if pipe_lock >= 0:
-                    if pipe_lock == i and float(chan.voltage) <= water_end_threshold:
-                        GPIO.output(sensor_to_gpio[i], GPIO.HIGH)
-                        pipe_lock = -1
-                        print("UNLOCKING PIPE %d" % i)
-                elif float(chan.voltage) >= water_start_threshold:
-                    pipe_lock = i
-                    print("LOCKING PIPE %d" % i)
-                    GPIO.output(sensor_to_gpio[i], GPIO.LOW)
-                """
                 channel_id = i+1
-                if channel_id not in open_channels and round(float(chan.voltage), 1) >= round(thresholds[channel_id], 1):
-                    activity.insert_water_start_txn(channel_id)
-        time.sleep(2)
+                if channel_id in open_channels:
+                    GPIO.output(sensor_to_gpio[i], GPIO.LOW)    # open the water pump
+                    print("STARTING WATER PUMP on channel %d NOW..." % channel_id)
+                    if is_wet_or_timeout(round(float(chan.voltage), 1), round(thresholds[channel_id]['end'], 1)):
+                        GPIO.output(sensor_to_gpio[i], GPIO.HIGH)   # close the water pump
+                        activity.insert_water_end_txn(channel_id)
+                        print("ENDING WATER PUMP on channel %d NOW." % channel_id)
+            time.sleep(2)
+        time.sleep(20)
+        
 except KeyboardInterrupt:
     print("Quit")
     db.disconnect()
