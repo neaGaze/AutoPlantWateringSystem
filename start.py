@@ -93,7 +93,7 @@ try:
                     GPIO.output(sensor_to_gpio[i], GPIO.LOW)
                 """
                 channel_id = i+1
-                if channel_id not in open_channels and float(chan.voltage) >= thresholds[channel_id]:
+                if channel_id not in open_channels and round(float(chan.voltage), 1) >= round(thresholds[channel_id], 1):
                     activity.insert_water_start_txn(channel_id)
         time.sleep(2)
 except KeyboardInterrupt:
