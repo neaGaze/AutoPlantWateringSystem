@@ -10,7 +10,7 @@ class Activity:
 
     # ACTIVITY
     INSERT_ACTIVITY = "INSERT INTO Activity (transaction_id, created_at, channel_id, activity_type, is_open) VALUES (%d, '%s', %d, '%s', %i)"
-    READ_IS_OPEN = "SELECT channel_id from Activity where is_open=%i"
+    READ_IS_OPEN = "SELECT channel_id, transaction_id from Activity where is_open=%i"
 
     def __init__(self):
         self._driver = MysqlDriver.instance()
@@ -30,5 +30,11 @@ class Activity:
     def read_are_open(self):
         if self._driver:
             res = list(map(lambda x: x[0], list(self._driver.fetchall(lambda cursor: cursor.execute(Activity.READ_IS_OPEN % True)))))
+            return res
+        return []
+
+    def read_are_open_with_txnid(self):
+        if self._driver:
+            res = list(map(lambda x: (x[0], x[1]), list(self._driver.fetchall(lambda cursor: cursor.execute(Activity.READ_IS_OPEN % True)))))
             return res
         return []

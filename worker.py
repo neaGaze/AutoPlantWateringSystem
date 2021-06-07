@@ -64,7 +64,12 @@ def is_wet_or_timeout(sensor_msrmnt, water_end_msrmnt):
 # Run a forever loop to check the dryness    
 try:
     while True:
-        open_channels = activity.read_are_open()
+        open_channels_with_txnid = activity.read_are_open_with_txnid()
+        open_channels = list(map(lambda x: x[0], open_channels_with_txnid))
+        txn_ids = list(map(lambda x: x[1], open_channels_with_txnid))
+        channel_to_txn_id = {}
+        for i, c_id in enumerate(open_channels):
+            channel_to_txn_id[c_id] = txn_ids[i]
         print("OPEN channels: %s" % open_channels)
 
         for i,chan in enumerate(channels):
@@ -79,7 +84,7 @@ try:
                     print("STARTING WATER PUMP on channel %d NOW..." % channel_id)
                     if is_wet_or_timeout(round(float(chan.voltage), 1), round(thresholds[channel_id]['end'], 1)):
                         GPIO.output(sensor_to_gpio[i], GPIO.HIGH)   # close the water pump
-                        activity.insert_water_end_txn(channel_id)
+                        activity.insert_water_end_txn(channel_id, channel_to_txn_id[channel_id])
                         print("ENDING WATER PUMP on channel %d NOW." % channel_id)
             time.sleep(2)
         time.sleep(20)
